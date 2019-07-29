@@ -17,6 +17,7 @@ class CreatePlayersTable extends Migration
             
             $table->mediumInteger('id')->unique();
             $table->mediumInteger('code');
+            $table->tinyInteger('element_type');
             $table->decimal('ep_next', 4, 1)->nullable();
             $table->decimal('ep_this', 4, 1)->nullable();
             $table->smallInteger('event_points');

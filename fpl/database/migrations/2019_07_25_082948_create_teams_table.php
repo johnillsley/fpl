@@ -22,7 +22,7 @@ class CreateTeamsTable extends Migration
             $table->integer('played');
             $table->integer('points');
             $table->integer('position');
-            $table->string('shortname', 3);
+            $table->string('short_name', 3);
             $table->integer('strength');
             $table->integer('win');
             $table->integer('strength_overall_home');

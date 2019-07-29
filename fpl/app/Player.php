@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Team;
 
 class Player extends Model
 {
@@ -13,6 +14,7 @@ class Player extends Model
     protected $fillable = [
             'id',
             'code',
+            'element_type',
             'ep_next',
             'ep_this',
             'event_points',
@@ -50,6 +52,37 @@ class Player extends Model
             'threat',
             'ict_index'
     ];
+
+    public function getTeamShortNameAttribute()
+    {
+        return Team::find($this->team)->short_name;
+    }
     
+    public function getPositionAttribute()
+    {
+        switch ($this->element_type) {
+            case 1: $position = 'Goalkeeper'; break;
+            case 2: $position = 'Defender'; break;
+            case 3: $position = 'Midfielder'; break;
+            case 4: $position = 'Forward'; break;
+        }
+        return $position;
+    }
+
+    public function getPointsPer90MinutesAttribute()
+    {
+        if ($this->minutes > 0) {
+            $points = ($this->total_points / $this->minutes) * 90;
+        } else {
+            $points = 0;
+        }
+        return number_format($points, 1);
+    }
+    
+    public function getNowCostAttribute($value)
+    {
+        $value = number_format($value / 10, 1);
+        return $value;
+    }
 }
 

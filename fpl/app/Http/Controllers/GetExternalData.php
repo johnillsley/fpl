@@ -21,7 +21,6 @@ class GetExternalData extends Controller
             $data = ExternalData::getall();
         }
         $display = "<pre>" . print_r($data, true) . "</pre>";
-        ExternalData::import_players();
         return $display;
     }
 }

@@ -27,3 +27,9 @@ Route::resource('player', 'PlayerController', ['only' => [
 ]]);
 
 Route::get('getdata/{type?}', 'GetExternalData');
+
+Route::get('fixtures/{week?}', 'ShowFixtures');
+
+Route::get('team/{team}', 'ShowTeam');
+
+Route::get('chart/{type}', 'ShowChart');

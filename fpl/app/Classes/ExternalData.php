@@ -5,6 +5,9 @@ namespace App\Classes;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use App\Player;
+use App\Team;
+use App\Week;
+use App\Fixture;
 
 class ExternalData
 {
@@ -16,6 +19,14 @@ class ExternalData
         return $array;
     }
 
+    static function getfixtures()
+    {
+        $url = \Config::get('constants.options.fpl_ws_fixtures');
+        $data = file_get_contents($url);
+        $array = json_decode($data);
+        return $array;
+    }
+    
     static function get($type)
     {
         // $type options...
@@ -27,7 +38,7 @@ class ExternalData
         // elements
         // element_stats
         // element_types
-
+        
         switch($type) {
             case 'players':
                 $subset = 'elements';
@@ -40,6 +51,9 @@ class ExternalData
                 break;
             case 'stats':
                 $subset = 'element_stats';
+                break;
+            case 'fixtures':
+                return self::getfixtures();
                 break;
             default:
                 return false;
@@ -64,5 +78,29 @@ class ExternalData
     static function import_transfers()
     {
 
+    }
+
+    static function import_teams()
+    {
+        $teams = self::get('teams');
+        foreach ($teams as $team) {
+            Team::updateOrCreate(['id' => $team->id], (array)$team);
+        }
+    }
+
+    static function import_weeks()
+    {
+        $weeks = self::get('weeks');
+        foreach ($weeks as $week) {
+            Week::updateOrCreate(['id' => $week->id], (array)$week);
+        }
+    }
+
+    static function import_fixtures()
+    {
+        $fixtures = self::get('fixtures');
+        foreach ($fixtures as $fixture) {
+            Fixture::updateOrCreate(['id' => $fixture->id], (array)$fixture);
+        }
     }
 }

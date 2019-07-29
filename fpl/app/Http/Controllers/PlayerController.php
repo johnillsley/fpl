@@ -15,7 +15,7 @@ class PlayerController extends Controller
     public function index()
     {
         $players = Player::all();
-        return view('player.index',['players' => $players]);
+        return view('player.players',['players' => $players]);
     }
 
     /**
