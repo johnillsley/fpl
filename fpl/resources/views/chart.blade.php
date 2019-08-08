@@ -3,12 +3,19 @@
 @section('title', 'Page Title')
 
 @section('content')
-    <canvas id="chartjs" class="chartjs"></canvas>
+    <div id="series_chart_div" style="width: 1500px; height: 1000px;"></div>
 @endsection
 
 @section('extrajs')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script>
-        new Chart(document.getElementById("chartjs"),{!! $chart !!});
-    </script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable({!! $chart->data !!});
+        var options = {!! $chart->options !!};
+        var chart = new google.visualization.{{ $chart->type }}(document.getElementById('series_chart_div'));
+        chart.draw(data, options);
+    }
+</script>
 @endsection

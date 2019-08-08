@@ -26,6 +26,21 @@ class Fixture extends Model
             'team_a_difficulty'
     ];
 
+    public function away_team()
+    {
+        return $this->belongsTo('App\Team', 'team_a', 'id');
+    }
+
+    public function home_team()
+    {
+        return $this->belongsTo('App\Team', 'team_h', 'id');
+    }
+
+    public function week()
+    {
+        return $this->belongsTo('App\Week', 'event', 'id');
+    }
+    
     public function getFixtureTimeAttribute()
     {
         $date = Carbon::createFromFormat('Y-m-d H:i:s', $this->kickoff_time, 'UTC');
@@ -38,16 +53,6 @@ class Fixture extends Model
         $date = Carbon::createFromFormat('Y-m-d H:i:s', $this->kickoff_time, 'UTC');
         $date->setTimezone('Europe/London');
         return $date->format('l jS F Y');
-    }
-
-    public function getTeamHNameAttribute()
-    {
-        return Team::find($this->team_h)->name;
-    }
-
-    public function getTeamANameAttribute()
-    {
-        return Team::find($this->team_a)->name;
     }
     
     public function setKickoffTimeAttribute($value)

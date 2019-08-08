@@ -19,17 +19,17 @@
         </thead>
         <tbody>
         @foreach($players as $player)
-            @if ($player->status == 'a')
+            @if ($player->transfer->status == 'a')
                 @php ($status = '')
             @else
                 @php ($status = 'table-danger')
             @endif
-            <tr class="danger">
+            <tr id="player-row-{{ $player->id }}">
                 <td>{{ $player->team_short_name }}</td>
                 <td>{{ $player->position }}</td>
-                <td class="{{ $status  }}"><a href="/player/{{ $player->id }}">{{ $player->second_name }}</a></td>
-                <td class="text-right">{{ $player->now_cost }}</td>
-                <td class="text-right">{{ $player->selected_by_percent }}</td>
+                <td class="{{ $status  }}"><a href="/player/{{ $player->id }}">{{ $player->second_name }}</a><button class="float-right btn btn-outline-primary btn-sm">Add to watchlist</button></td>
+                <td class="text-right">{{ $player->transfer->now_cost }}</td>
+                <td class="text-right">{{ $player->transfer->selected_by_percent }}</td>
                 <td class="text-right">{{ $player->minutes }}</td>
                 <td class="text-right">{{ $player->total_points }}</td>
                 <td class="text-right">{{ $player->points_per_game }}</td>

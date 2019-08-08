@@ -14,7 +14,7 @@ class CreateWeeksTable extends Migration
     public function up()
     {
         Schema::create('weeks', function (Blueprint $table) {
-            $table->mediumInteger('id')->unique();
+            $table->integer('id')->unique();
             $table->string('name', 100);
             $table->decimal('average_entry_score', 5, 1);
             $table->tinyInteger('finished')->default(0);

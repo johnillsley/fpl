@@ -16,35 +16,48 @@ class ShowChart extends Controller
     public function __invoke($type)
     {
         // get all players
+        $chart = new \stdClass();
         switch ($type) {
             case 'ownership':
-                $chart_type = "bubble";
+                $chart->type = "BubbleChart";
+
+                $options = array();
+                $options['title'] = 'Player points per game against price';
+                $options['hAxis']['title'] = 'Price';
+                $options['vAxis']['title'] = 'Points per game';
+                $options['bubble']['textStyle']['fontSize'] = "11";
                 
                 $players = Player::where('minutes', '>', 200)->get();
-                $data = array();
+                $data = array(['ID', 'Price', 'Points per game', 'Team', 'Ownership']);
                 foreach ($players as $player) {
-                    $item = new \stdClass();
-                    $item->y = $player->points_per_game;
-                    $item->x = $player->now_cost;
-                    $item->r = $player->selected_by_percent;
-                    $item->label = $player->second_name;
+                    $item = array();
+                    $item[] = $player->second_name;
+                    $item[] = (float)$player->now_cost;
+                    $item[] = (float)$player->points_per_game;
+                    $item[] = $player->team_short_name;
+                    $item[] = (float)$player->selected_by_percent;
                     $data[] = $item;
                 }
                 break;
         }
-        $chart = new \stdClass();
-        $chart->type = $chart_type;
+        /*
+        $data = [
+                ['ID', 'Price', 'Points per game', 'Team', 'Ownership'],
+                ['CAN',    80.66,              1.67,      'North America',  33739900],
+                ['DEU',    79.84,              1.36,      'Europe',         81902307],
+                ['DNK',    78.6,               1.84,      'Europe',         5523095],
+                ['EGY',    72.73,              2.78,      'Middle East',    79716203],
+                ['GBR',    80.05,              2,         'Europe',         61801570],
+                ['IRN',    72.49,              1.7,       'Middle East',    73137148],
+                ['IRQ',    68.09,              4.77,      'Middle East',    31090763],
+                ['ISR',    81.55,              2.96,      'Middle East',    7485600],
+                ['RUS',    68.6,               1.54,      'Europe',         141850000],
+                ['USA',    78.09,              2.05,      'North America',  307007000]  
+        ];
+        */
+        $chart->options = json_encode((object)$options);
+        $chart->data = json_encode($data);
 
-        $datasets = array();
-        $dataset = new \stdClass();
-        $dataset->label = 'First dataset';
-        $dataset->data = $data;
-        $dataset->backgroundColor = 'rgb(255, 99, 132)';
-        $datasets[] = $dataset;
-        
-        $chart->data = new \stdClass();
-        $chart->data->datasets = $datasets;
-        
-        return view('chart', ['chart' => json_encode($chart)]);
+        return view('chart', ['chart' => $chart]);
     }
 }

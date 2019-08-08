@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Team;
+use App\Transfer;
 
 class Player extends Model
 {
@@ -20,18 +21,11 @@ class Player extends Model
             'event_points',
             'first_name',
             'form',
-            'now_cost',
             'points_per_game',
             'second_name',
-            'selected_by_percent',
-            'status',
             'team',
             'team_code',
             'total_points',
-            'transfers_in',
-            'transfers_in_event',
-            'transfers_out',
-            'transfers_out_event',
             'value_form',
             'value_season',
             'minutes',
@@ -53,6 +47,11 @@ class Player extends Model
             'ict_index'
     ];
 
+    public function transfer()
+    {
+        return $this->hasOne('App\Transfer')->latest();
+    }
+    
     public function getTeamShortNameAttribute()
     {
         return Team::find($this->team)->short_name;

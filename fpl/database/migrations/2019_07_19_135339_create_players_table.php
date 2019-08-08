@@ -15,7 +15,7 @@ class CreatePlayersTable extends Migration
     {
         Schema::create('players', function (Blueprint $table) {
             
-            $table->mediumInteger('id')->unique();
+            $table->integer('id')->unique();
             $table->mediumInteger('code');
             $table->tinyInteger('element_type');
             $table->decimal('ep_next', 4, 1)->nullable();
@@ -23,18 +23,11 @@ class CreatePlayersTable extends Migration
             $table->smallInteger('event_points');
             $table->string('first_name', 32);
             $table->decimal('form', 4, 1);
-            $table->smallInteger('now_cost');
             $table->decimal('points_per_game', 4, 1);
             $table->string('second_name', 32);
-            $table->decimal('selected_by_percent', 4, 1);
-            $table->char('status');
-            $table->smallInteger('team');
+            $table->integer('team');
             $table->smallInteger('team_code');
             $table->smallInteger('total_points');
-            $table->smallInteger('transfers_in');
-            $table->smallInteger('transfers_in_event');
-            $table->smallInteger('transfers_out');
-            $table->smallInteger('transfers_out_event');
             $table->decimal('value_form', 5, 1);
             $table->decimal('value_season', 5, 1);
             $table->smallInteger('minutes');
@@ -55,6 +48,9 @@ class CreatePlayersTable extends Migration
             $table->decimal('threat', 5, 1);
             $table->decimal('ict_index', 5, 1);
             $table->timestamps();
+            
+            $table->foreign('team')->references('id')->on('teams');
+            $table->index('team');
         });
     }
 

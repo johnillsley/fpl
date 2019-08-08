@@ -14,7 +14,7 @@ class CreateFixturesTable extends Migration
     public function up()
     {
         Schema::create('fixtures', function (Blueprint $table) {
-            $table->mediumInteger('id')->unique();
+            $table->integer('id')->unique();
             $table->integer('code');
             $table->integer('event');
             $table->integer('finished')->default(0);
@@ -26,6 +26,10 @@ class CreateFixturesTable extends Migration
             $table->integer('team_h_difficulty');
             $table->integer('team_a_difficulty');
             $table->timestamps();
+
+            $table->foreign('event')->references('id')->on('weeks');
+            $table->foreign('team_a')->references('id')->on('teams');
+            $table->foreign('team_h')->references('id')->on('teams');
 
             $table->index('event');
             $table->index('team_a');

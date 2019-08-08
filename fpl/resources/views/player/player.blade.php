@@ -8,5 +8,9 @@
             <dt class="col-sm-3">{{ $name }}</dt>
             <dd class="col-sm-9">{{ $player->$name }}</dd>
         @endforeach
+            @foreach($player->transfer->getAttributes() as $name => $value)
+                <dt class="col-sm-3">{{ $name }}</dt>
+                <dd class="col-sm-9">{{ $player->transfer->$name }}</dd>
+            @endforeach
     </dl>
 @endsection

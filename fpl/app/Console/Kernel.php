@@ -24,9 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('import:players')->hourly();
-        $schedule->command('import:teams')->daily();
+        $schedule->command('import:players')->daily();
+        $schedule->command('import:transfers')->hourly();
         $schedule->command('import:weeks')->daily();
+        $schedule->command('import:teams')->daily();
     }
 
     /**
