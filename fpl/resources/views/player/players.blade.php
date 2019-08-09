@@ -2,6 +2,29 @@
 
 @section('title', 'Page Title')
 
+@section('head')
+    <script>
+        $(document).ready(function() {
+            $(".watchlist-btn").click(function() {
+                var playerId = $(this).attr("player");
+                $.ajax({
+                    type:'POST',
+                    url:'watchlist/' + playerId,
+                    data: {"_token": "{{ csrf_token() }}",},
+                    success:function(data){
+                        var todo = jQuery.parseJSON(data);
+                        if (todo.inwatchlist) {
+                            $("button[player=" + todo.player + "]").removeClass("btn-outline-primary").addClass("btn-success");
+                        } else {
+                            $("button[player=" + todo.player + "]").removeClass("btn-success").addClass("btn-outline-primary");
+                        }
+                    }
+                });
+            })
+        })
+    </script>
+@endsection
+
 @section('content')
     <table id="dynamictable" class="table table-sm table-striped table-bordered" style="width:100%">
         <thead>
@@ -24,10 +47,18 @@
             @else
                 @php ($status = 'table-danger')
             @endif
-            <tr id="player-row-{{ $player->id }}">
+            <tr id="playerid-{{ $player->id }}">
                 <td>{{ $player->team_short_name }}</td>
                 <td>{{ $player->position }}</td>
-                <td class="{{ $status  }}"><a href="/player/{{ $player->id }}">{{ $player->second_name }}</a><button class="float-right btn btn-outline-primary btn-sm">Add to watchlist</button></td>
+                <td class="{{ $status  }}"><a href="/player/{{ $player->id }}">{{ $player->second_name }}</a>
+                    <?php
+                        $button_style = ($player->watchlist) ? 'btn-success' : 'btn-outline-primary';
+                        echo Form::button('Watchlist',[
+                        'player' => $player->id ,
+                        'class'=>'btn ' . $button_style . ' btn-sm float-right watchlist-btn'
+                        ])  
+                    ?>
+                </td>
                 <td class="text-right">{{ $player->transfer->now_cost }}</td>
                 <td class="text-right">{{ $player->transfer->selected_by_percent }}</td>
                 <td class="text-right">{{ $player->minutes }}</td>

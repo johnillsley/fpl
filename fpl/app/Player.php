@@ -51,6 +51,11 @@ class Player extends Model
     {
         return $this->hasOne('App\Transfer')->latest();
     }
+
+    public function watchlist()
+    {
+        return $this->hasOne('App\Watchlist');
+    }
     
     public function getTeamShortNameAttribute()
     {
@@ -76,12 +81,6 @@ class Player extends Model
             $points = 0;
         }
         return number_format($points, 1);
-    }
-    
-    public function getNowCostAttribute($value)
-    {
-        $value = number_format($value / 10, 1);
-        return $value;
     }
 }
 

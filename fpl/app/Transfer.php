@@ -20,4 +20,10 @@ class Transfer extends Model
             'transfers_out',
             'transfers_out_event'
     ];
+
+    public function getNowCostAttribute($value)
+    {
+        $value = number_format($value / 10, 1);
+        return $value;
+    }
 }
