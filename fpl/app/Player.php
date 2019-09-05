@@ -3,8 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Team;
-use App\Transfer;
 
 class Player extends Model
 {
@@ -54,14 +52,24 @@ class Player extends Model
 
     public function watchlist()
     {
-        return $this->hasOne('App\Watchlist');
+        return $this->hasOne('App\Watchlist', 'player_id', 'id');
+    }
+
+    public function team()
+    {
+        return $this->hasOne('App\Team');
     }
     
+    public function performances()
+    {
+        return $this->hasMany('App\Performance', 'player_id', 'id');
+    }
+
     public function getTeamShortNameAttribute()
     {
         return Team::find($this->team)->short_name;
     }
-    
+
     public function getPositionAttribute()
     {
         switch ($this->element_type) {

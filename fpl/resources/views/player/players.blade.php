@@ -2,42 +2,20 @@
 
 @section('title', 'Page Title')
 
-@section('head')
-    <script>
-        $(document).ready(function() {
-            $(".watchlist-btn").click(function() {
-                var playerId = $(this).attr("player");
-                $.ajax({
-                    type:'POST',
-                    url:'watchlist/' + playerId,
-                    data: {"_token": "{{ csrf_token() }}",},
-                    success:function(data){
-                        var todo = jQuery.parseJSON(data);
-                        if (todo.inwatchlist) {
-                            $("button[player=" + todo.player + "]").removeClass("btn-outline-primary").addClass("btn-success");
-                        } else {
-                            $("button[player=" + todo.player + "]").removeClass("btn-success").addClass("btn-outline-primary");
-                        }
-                    }
-                });
-            })
-        })
-    </script>
-@endsection
-
 @section('content')
     <table id="dynamictable" class="table table-sm table-striped table-bordered" style="width:100%">
+        <caption>List of players</caption>
         <thead>
         <tr>
-            <th class="th-1">Team</th>
-            <th class="th-1">Position</th>
-            <th class="th-2">Player</th>
-            <th class="th-1">Price</th>
-            <th class="th-1">% Own</th>
-            <th class="th-1">Mins</th>
-            <th class="th-1">Points</th>
-            <th class="th-1">PPG</th>
-            <th class="th-1">PP90</th>
+            <th scope="col">Team</th>
+            <th scope="col">Position</th>
+            <th scope="col">Player</th>
+            <th scope="col">Price</th>
+            <th scope="col">% Own</th>
+            <th scope="col">Mins</th>
+            <th scope="col">Points</th>
+            <th scope="col">PPG</th>
+            <th scope="col">PP90</th>
         </tr>
         </thead>
         <tbody>
@@ -77,6 +55,22 @@
     <script>
         $(document).ready(function() {
             $('#dynamictable').DataTable();
+            $(".watchlist-btn").click(function() {
+                var playerId = $(this).attr("player");
+                $.ajax({
+                    type:'POST',
+                    url:'/watchlist/' + playerId,
+                    data: {"_token": "{{ csrf_token() }}",},
+                    success:function(data){
+                        var todo = jQuery.parseJSON(data);
+                        if (todo.inwatchlist) {
+                            $("button[player=" + todo.player + "]").removeClass("btn-outline-primary").addClass("btn-success");
+                        } else {
+                            $("button[player=" + todo.player + "]").removeClass("btn-success").addClass("btn-outline-primary");
+                        }
+                    }
+                });
+            })
         } );
     </script>
 @endsection

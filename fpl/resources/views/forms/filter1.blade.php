@@ -5,7 +5,7 @@ echo Form::select("position",['1' => 'Goalkeeper', '2' => 'Defender', '3' => 'Mi
         [
                 "class" => "form-group",
                 "placeholder" => "Position..."
-        ]):
+        ]);
 
 // Team
 

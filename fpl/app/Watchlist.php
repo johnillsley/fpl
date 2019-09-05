@@ -13,4 +13,14 @@ class Watchlist extends Model
             'player_id',
             'user_id',
     ];
+
+    public function player()
+    {
+        return $this->hasOne('App\Player', 'id', 'player_id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne('App\User', 'id', 'user_id');
+    }
 }

@@ -30,8 +30,14 @@ Route::get('getdata/{type?}', 'GetExternalData');
 
 Route::get('fixtures/{week?}', 'ShowFixtures');
 
+Route::get('matches/{team}', 'ShowMatches');
+
+Route::get('table', 'ShowTable');
+
 Route::get('team/{team}', 'ShowTeam');
 
 Route::get('chart/{type}', 'ShowChart');
+
+Route::get('watchlist', 'ShowWatchlist');
 
 Route::post('watchlist/{player}', 'AjaxController@watchlist');

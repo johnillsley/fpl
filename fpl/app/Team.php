@@ -29,4 +29,29 @@ class Team extends Model
             'strength_defence_home',
             'strength_defence_away'
     ];
+
+    public function away_fixtures()
+    {
+        return $this->hasMany('App\Fixture', 'team_a');
+    }
+
+    public function home_fixtures()
+    {
+        return $this->hasMany('App\Fixture', 'team_h');
+    }
+
+    public function away_results()
+    {
+        return $this->hasMany('App\Fixture', 'team_a')->where('fixtures.finished', '=', 1);
+    }
+
+    public function home_results()
+    {
+        return $this->hasMany('App\Fixture', 'team_h')->where('fixtures.finished', '=', 1);
+    }
+    
+    public function players()
+    {
+        return $this->hasMany('App\Player', 'team');
+    }
 }

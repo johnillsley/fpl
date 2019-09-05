@@ -9,6 +9,7 @@ use App\Transfer;
 use App\Team;
 use App\Week;
 use App\Fixture;
+use App\Performance;
 use App\Understat;
 
 class ExternalData
@@ -72,14 +73,6 @@ class ExternalData
         }
     }
 
-    static function import_stats($week)
-    {
-        $url = \Config::get('constants.options.fpl_ws_week') . '/' . $week . '/live';
-        $data = file_get_contents($url);
-        $array = json_decode($data);
-        return $array;
-    }
-
     static function import_transfers()
     {
         $players = self::get('players');
@@ -113,6 +106,22 @@ class ExternalData
         $fixtures = self::get('fixtures');
         foreach ($fixtures as $fixture) {
             Fixture::updateOrCreate(['id' => $fixture->id], (array)$fixture);
+        }
+    }
+
+    static function import_performances($week)
+    {
+        $url = \Config::get('constants.options.fpl_ws_week') . '/' . $week . '/live';
+        $data = file_get_contents($url);
+        $array = json_decode($data);
+        $players = $array->elements;
+        
+        foreach ($players as $player) {
+            $performance = $player->stats;
+            $performance->week = $week;
+            $performance->player_id = $player->id;
+            $performance->in_dreamteam = ($performance->in_dreamteam) ? 1 : 0;
+            Performance::updateOrCreate(['player_id' => $performance->player_id, 'week' => $performance->week], (array)$performance);
         }
     }
 

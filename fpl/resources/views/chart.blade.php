@@ -3,7 +3,7 @@
 @section('title', 'Page Title')
 
 @section('content')
-    <div id="series_chart_div" style="width: 1500px; height: 1000px;"></div>
+    <div id="series_chart_div" style="height: 850px;"></div>
 @endsection
 
 @section('extrajs')
