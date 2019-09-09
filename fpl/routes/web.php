@@ -36,7 +36,10 @@ Route::get('table', 'ShowTable');
 
 Route::get('team/{team}', 'ShowTeam');
 
+Route::get('transfers/{player}', 'ShowTransfers');
+
 Route::get('chart/{type}', 'ShowChart');
+Route::post('chart/{type}', 'ShowChart');
 
 Route::get('watchlist', 'ShowWatchlist');
 

@@ -21,6 +21,11 @@ class Transfer extends Model
             'transfers_out_event'
     ];
 
+    public function player()
+    {
+        return $this->hasOne('App\Player', 'id', 'player_id');
+    }
+    
     public function getNowCostAttribute($value)
     {
         $value = number_format($value / 10, 1);

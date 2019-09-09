@@ -3,6 +3,27 @@
 @section('title', 'Page Title')
 
 @section('content')
+    <div id="filters_div">
+        @php
+        if (count($filters) > 0) {
+            echo Form::open(array('action' => ['ShowChart', 'ownership']));
+
+            foreach ($filters as $filter) {
+                echo Form::label($filter->name, $filter->label);
+                switch ($filter->type) {
+                    case 'select':
+                        echo Form::select($filter->name, $filter->options, $filter->selected);
+                    break;
+                    case 'multiple':
+                        echo Form::select("$filter->name[]", $filter->options, $filter->selected, ['class' => 'form-control', 'multiple' => 'multiple']);
+                    break;
+                }
+            }
+            echo Form::submit('Update filter');
+            echo Form::close();
+        }
+        @endphp
+    </div>
     <div id="series_chart_div" style="height: 850px;"></div>
 @endsection
 

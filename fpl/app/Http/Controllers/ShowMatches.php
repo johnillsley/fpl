@@ -20,7 +20,6 @@ class ShowMatches extends Controller
                 ->orderBy('kickoff_time', 'ASC')
                 ->get();
 
-        print_r($fixtures);
-        return view('matches', ['fixtures' => $fixtures]);
+        return view('matches', ['fixtures' => $fixtures, 'team' => $team]);
     }
 }

@@ -24,4 +24,9 @@ class Week extends Model
             'is_current',
             'is_next'
     ];
+    
+    public static function current() {
+        $current = self::where('is_current', '=', 1)->first();
+        return $current;
+    }
 }
