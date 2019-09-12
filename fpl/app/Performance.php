@@ -34,11 +34,11 @@ class Performance extends Model
 
     public function player()
     {
-        return $this->hasOne('App\Player', 'id', 'player_id');
+        return $this->belongsTo('App\Player');
     }
 
     public function week()
     {
-        return $this->hasOne('App\Week', 'id', 'week');
+        return $this->belongsTo('App\Week', 'id', 'week');
     }
 }

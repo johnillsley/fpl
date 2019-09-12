@@ -54,8 +54,14 @@ class ShowChart extends Controller
                 if (is_array($request->input('teams'))) {
                     $filter->selected = $request->input('teams');
                     $players = $players->whereIn('team', $filter->selected);
+                    foreach ($filter->selected as $team) {
+                        $team_colours = "";                        
+                    }
                 } else {
                     $filter->selected = null;
+                    foreach ($teams as $team) {
+                        $team_colours = "";
+                    }
                 }
                 $filters[] = $filter;
                 // End of filters.
@@ -67,6 +73,7 @@ class ShowChart extends Controller
                 $options['chartArea'] = 'left:10,top:20,width:"100%",height:"100%"';
                 $options['hAxis']['title'] = 'Price';
                 $options['vAxis']['title'] = 'Points per game';
+                //$options['colors'] = array('#657CD0','#DA68A0','#06C3C0','#777B80','#7C6D70','#7C0850','#F75870');
                 $options['bubble']['textStyle']['fontSize'] = "11";
                 $data = array(['ID', 'Price', 'Points per game', 'Team', 'Ownership']);
                 foreach ($players as $player) {
@@ -93,7 +100,6 @@ class ShowChart extends Controller
                 foreach ($performances as $performance) {
                     $next_week = Performance::where([['player_id', '=', $performance->player_id], ['week', '=', $performance->week + 1]])->first();
                     $item = array();
-
                     $item[] = $performance->player->second_name;
                     $item[] = (float)$performance->player->form;
                     $item[] = (float)$performance->total_points;

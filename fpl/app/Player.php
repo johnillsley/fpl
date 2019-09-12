@@ -52,22 +52,29 @@ class Player extends Model
 
     public function watchlist()
     {
-        return $this->hasOne('App\Watchlist', 'player_id', 'id');
+        return $this->hasOne('App\Watchlist');
     }
 
-    public function team()
+    public function club()
     {
-        return $this->hasOne('App\Team');
+        return $this->hasOne('App\Team', 'id', 'team');
     }
-    
+
     public function performances()
     {
         return $this->hasMany('App\Performance', 'player_id', 'id');
     }
 
-    public function getTeamShortNameAttribute()
+    public function ranking($field)
     {
-        return Team::find($this->team)->short_name;
+        $rankingFormatter = new \NumberFormatter('en_US', \NumberFormatter::ORDINAL);
+        if (is_numeric($this->$field)) {
+            if ($this->$field > 0) {
+                $ranking = self::where([[$field, '>', $this->$field], ['element_type', '=', $this->element_type]])->count() + 1;
+                return '(' . $rankingFormatter->format($ranking) . ' for ' . $this->position . 's)';
+            }
+        }
+        return '';
     }
 
     public function getPositionAttribute()
@@ -91,4 +98,3 @@ class Player extends Model
         return number_format($points, 1);
     }
 }
-

@@ -35,6 +35,7 @@ Route::get('matches/{team}', 'ShowMatches');
 Route::get('table', 'ShowTable');
 
 Route::get('team/{team}', 'ShowTeam');
+Route::get('position/{position}', 'ShowPosition');
 
 Route::get('transfers/{player}', 'ShowTransfers');
 

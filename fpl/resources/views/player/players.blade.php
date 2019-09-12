@@ -16,6 +16,7 @@
             <th scope="col">Points</th>
             <th scope="col">PPG</th>
             <th scope="col">PP90</th>
+            <th scope="col">BPS</th>
         </tr>
         </thead>
         <tbody>
@@ -26,8 +27,8 @@
                 @php ($status = 'table-danger')
             @endif
             <tr id="playerid-{{ $player->id }}">
-                <td>{{ $player->team_short_name }}</td>
-                <td>{{ $player->position }}</td>
+                <td><a href="/team/{{ $player->team }}">{{ $player->club->short_name }}</a></td>
+                <td><a href="/position/{{ $player->element_type }}">{{ $player->position }}</a></td>
                 <td class="{{ $status  }}"><a href="/player/{{ $player->id }}">{{ $player->second_name }}</a>
                     <?php
                         $button_style = ($player->watchlist) ? 'btn-success' : 'btn-outline-primary';
@@ -43,6 +44,7 @@
                 <td class="text-right">{{ $player->total_points }}</td>
                 <td class="text-right">{{ $player->points_per_game }}</td>
                 <td class="text-right">{{ $player->points_per90_minutes }}</td>
+                <td class="text-right">{{ $player->bps }}</td>
             </tr>
         @endforeach
         </tbody>
@@ -54,7 +56,10 @@
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#dynamictable').DataTable();
+            $('#dynamictable').DataTable({
+                "order": [6, 'DESC'],
+                "stateSave": true
+            });
             $(".watchlist-btn").click(function() {
                 var playerId = $(this).attr("player");
                 $.ajax({
