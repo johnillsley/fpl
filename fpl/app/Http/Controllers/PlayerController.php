@@ -59,12 +59,12 @@ class PlayerController extends Controller
                 'Goals scored',
                 'Assists',
                 'Clean_sheets',
-                'Goals conceded',
-                'Own goals',
-                'Bonus',
-                'Penalties missed',
                 'Saves points',
                 'Penalties saved',
+                'Bonus',
+                'Goals conceded',
+                'Own goals',
+                'Penalties missed',
                 'Yellow Cards',
                 'Red Cards']);
 
@@ -103,12 +103,12 @@ class PlayerController extends Controller
             $item[] = $performance->goals_scored * $goal_points;
             $item[] = $performance->assists * 3;
             $item[] = $performance->clean_sheets * $clean_sheet_points;
-            $item[] = floor($performance->goals_conceded * $goals_conceded / (-2));
-            $item[] = (-3) * $performance->own_goals;
-            $item[] = $performance->bonus;
-            $item[] = (-2) * $performance->panalties_missed;
             $item[] = floor($performance->saves * 3);
             $item[] = $performance->penalties_saved * 5;
+            $item[] = $performance->bonus;
+            $item[] = floor($performance->goals_conceded * $goals_conceded / (-2));
+            $item[] = (-3) * $performance->own_goals;
+            $item[] = (-2) * $performance->panalties_missed;
             $item[] = (-1) * $performance->yellow_cards;
             $item[] = (-3) * $performance->red_cards;
             $data[] = $item;
@@ -139,10 +139,22 @@ class PlayerController extends Controller
             $prev_transfers_in = $transfer->transfers_in;
             $prev_transfers_out = $transfer->transfers_out;
         }
+        $tr = new \stdClass();
+        $tr->data = json_encode($data);
 
-        $transfers = new \stdClass();
-        $transfers->data = json_encode($data);
-        return view('player.player',['player' => $player, 'performance' => $performances, 'transfers' => $transfers]);
+        // Prepare data for ownership chart.
+        $data = array(['Date', 'Ownership (%)']);
+        
+        foreach ($transfers as $transfer) {
+            $item = array();
+            $item[] = date("M j, Y", strtotime($transfer->created_at));
+            $item[] = (float)$transfer->selected_by_percent;
+            $data[] = $item;
+        }
+        $ownership = new \stdClass();
+        $ownership->data = json_encode($data);
+      
+        return view('player.player',['player' => $player, 'performance' => $performances, 'transfers' => $tr, 'ownership' => $ownership]);
     }
 
     /**

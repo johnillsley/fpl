@@ -4,6 +4,7 @@
 
 @section('content')
     @include('subviews.players', ['players' => $players])
+    @include('subviews.fixtures', ['fixtures' => $fixtures])
 @endsection
 
 @section('extrajs')

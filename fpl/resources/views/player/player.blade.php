@@ -32,7 +32,7 @@
             <dd class="col-sm-3">{{ date("F j, g:i a", strtotime($player->updated_at)) }}</dd>
         </dl>
     </div>
-
+        
     <div id="player_stats">
     <h4>Stats</h4>
         <dl class="row">
@@ -63,6 +63,22 @@
             <dd class="col-sm-3">{{ $player->threat }} <span class="ranking">{{ $player->ranking("threat") }}</span></dd>
             <dt class="col-sm-3">ICT Index</dt>
             <dd class="col-sm-3">{{ $player->ict_index }} <span class="ranking">{{ $player->ranking("ict_index") }}</span></dd>
+            <dt class="col-sm-3">Shots</dt>
+            <dd class="col-sm-3">{{ $player->understats->shots }}</dd>
+            <dt class="col-sm-3">Key passes</dt>
+            <dd class="col-sm-3">{{ $player->understats->key_passes }}</dd>
+            <dt class="col-sm-3">Shots per 90 mins</dt>
+            <dd class="col-sm-3">{{ number_format($player->understats->shots * 90 / $player->minutes, 2) }}</dd>
+            <dt class="col-sm-3">Key passes per 90 mins</dt>
+            <dd class="col-sm-3">{{ number_format($player->understats->key_passes * 90 / $player->minutes, 2) }}</dd>
+            <dt class="col-sm-3">Expected goals</dt>
+            <dd class="col-sm-3">{{ number_format($player->understats->xg, 2) }}</dd>
+            <dt class="col-sm-3">Expected assists</dt>
+            <dd class="col-sm-3">{{ number_format($player->understats->xa, 2) }}</dd>
+            <dt class="col-sm-3">Expected goals per 90 mins</dt>
+            <dd class="col-sm-3">{{ number_format($player->understats->xg * 90 / $player->minutes, 2) }}</dd>
+            <dt class="col-sm-3">Expected assists per 90 mins</dt>
+            <dd class="col-sm-3">{{ number_format($player->understats->xa * 90 / $player->minutes, 2) }}</dd>
         </dl>
         <div id="performance_chart_div"></div>
     </div>
@@ -90,17 +106,8 @@
             <dd class="col-sm-3">{{ date("F j, g:i a", strtotime($player->transfer->updated_at)) }}</dd>
         </dl>
         <div id="transfers_chart_div"></div>
+        <div id="ownership_chart_div"></div>
     </div>
-    <dl class="row">
-        @foreach($player->getAttributes() as $name => $value)
-            <dt class="col-sm-3">{{ $name }}</dt>
-            <dd class="col-sm-9">{{ $player->$name }}</dd>
-        @endforeach
-            @foreach($player->transfer->getAttributes() as $name => $value)
-                <dt class="col-sm-3">{{ $name }}</dt>
-                <dd class="col-sm-9">{{ $player->transfer->$name }}</dd>
-        @endforeach
-    </dl>
 @endsection
 
 @section('extrajs')
@@ -118,6 +125,7 @@
             isStacked: true,
             vAxis: {format: '0', title: 'Week points'},
             hAxis: {title: 'Week number'},
+            colors: ['#8aa7ba', '#00ff2f', '#00fff7', '#0059ff', '#76c445', '#6945c4', '#c23ec2', '#995734', '#998534', '#605078', '#ffd900', '#ff0000'],
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('performance_chart_div'));
         chart.draw(data, options);
@@ -125,12 +133,24 @@
         var data = google.visualization.arrayToDataTable({!! $transfers->data !!});
         var options = {
             width: '100%',
-            height: 800,
-            vAxis: {title: 'Transfers'},
+            height: 600,
+            chartArea: {top: 20, bottom: 120, left: 120, right: 180},
+            vAxis: {format: '0', title: 'Transfers'},
             hAxis: {title: 'Time'},
             curveType: 'function'
         };
         var chart = new google.visualization.LineChart(document.getElementById('transfers_chart_div'));
+        chart.draw(data, options);
+
+        var data = google.visualization.arrayToDataTable({!! $ownership->data !!});
+        var options = {
+            width: '100%',
+            height: 400,
+            chartArea: {top: 20, bottom: 120, left: 120, right: 180},
+            vAxis: {format: '0.0', title: 'Ownership (%)'},
+            hAxis: {title: 'Time'},
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('ownership_chart_div'));
         chart.draw(data, options);
     }
 </script>

@@ -33,6 +33,10 @@ class Understat extends Model
             'xg_buildup',
     ];
 
+    public function player()
+    {
+        return $this->hasOne('App\Player', 'id', 'player_id');
+    }
 
     public function setXgAttribute($value)
     {

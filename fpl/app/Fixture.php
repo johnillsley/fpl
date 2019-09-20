@@ -45,14 +45,14 @@ class Fixture extends Model
     {
         $date = Carbon::createFromFormat('Y-m-d H:i:s', $this->kickoff_time, 'UTC');
         $date->setTimezone('Europe/London');
-        return $date->format('g:i a');
+        return $date->format('g:i');
     }
 
     public function getFixtureDateAttribute()
     {
         $date = Carbon::createFromFormat('Y-m-d H:i:s', $this->kickoff_time, 'UTC');
         $date->setTimezone('Europe/London');
-        return $date->format('l jS F Y');
+        return $date->format('l jS F');
     }
     
     public function setKickoffTimeAttribute($value)

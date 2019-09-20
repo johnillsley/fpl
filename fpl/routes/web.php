@@ -10,17 +10,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-/*
-Route::get('/', function () {
-    return 'Hello';
-});
-*/
-/*
-Route::get('/', function () {
-    return view('welcome');
-});
-*/
 
+Route::get('/', function () {
+    return view('auth.login');
+});
 
 Route::resource('player', 'PlayerController', ['only' => [
         'index', 'show'
@@ -29,6 +22,7 @@ Route::resource('player', 'PlayerController', ['only' => [
 Route::get('getdata/{type?}', 'GetExternalData');
 
 Route::get('fixtures/{week?}', 'ShowFixtures');
+Route::get('fixture/{fixture}', 'ShowMatch');
 
 Route::get('matches/{team}', 'ShowMatches');
 
@@ -45,3 +39,6 @@ Route::post('chart/{type}', 'ShowChart');
 Route::get('watchlist', 'ShowWatchlist');
 
 Route::post('watchlist/{player}', 'AjaxController@watchlist');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

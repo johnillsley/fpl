@@ -60,6 +60,12 @@ class Player extends Model
         return $this->hasOne('App\Team', 'id', 'team');
     }
 
+    public function understats()
+    {
+        // TODO - what happens if understat record doesn't exist.
+        return $this->hasOne('App\Understat', 'player_id', 'id');
+    }
+    
     public function performances()
     {
         return $this->hasMany('App\Performance', 'player_id', 'id');
