@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Performance;
 use App\Player;
 use App\Team;
+use App\Transfer;
 use App\Week;
 
 class ShowChart extends Controller
@@ -103,15 +104,49 @@ class ShowChart extends Controller
                     $item[] = $performance->player->second_name;
                     $item[] = (float)$performance->player->form;
                     $item[] = (float)$performance->total_points;
-                    $item[] = $performance->player->team_short_name;
+                    $item[] = $performance->player->club->name;
                     $item[] = (float)$performance->player->transfer->selected_by_percent;
                     $data[] = $item;
                 }
                 break;
+
+            case 'transferactivity':
+                $chart->type = "BubbleChart";
+
+                $options = array();
+                $options['title'] = 'Most transferred players in the last hour';
+                $options['hAxis']['title'] = 'Form';
+                $options['vAxis']['title'] = 'Net transfers in during last hour';
+                $options['bubble']['textStyle']['fontSize'] = "11";
+
+                $recent1 = Transfer::where('updated_at', '>', date('Y-m-d H:i:s', strtotime('-1 hour')))->get();
+                $recent2 = Transfer::where('updated_at', '>', date('Y-m-d H:i:s', strtotime('-2 hour')))
+                        ->where('updated_at', '<', date('Y-m-d H:i:s', strtotime('-1 hour')))->get();
+                
+                $data = array(['ID', 'Form', 'Net transfers in last hour', 'Team', 'Cost']);
+                foreach ($recent1 as $transfer) {
+
+                    if (!$previous = $recent2->where('player_id', $transfer->player_id)->first()) {
+                        continue;
+                    } 
+                    
+                    $transfers_hour = ($transfer->transfers_in - $transfer->transfers_out)
+                            - ($previous->transfers_in - $previous->transfers_out);
+                    if (abs($transfers_hour) < 200) {
+                        continue;
+                    }
+                    $item = array();
+                    $item[] = $transfer->player->second_name;
+                    $item[] = (float)$transfer->player->form;
+                    $item[] = $transfers_hour;
+                    $item[] = $transfer->player->club->name;
+                    $item[] = (float)$transfer->player->transfer->now_cost;
+                    $data[] = $item;
+                }
         }
         $chart->options = json_encode((object)$options);
         $chart->data = json_encode($data);
-
+        
         return view('chart', ['chart' => $chart, 'filters' => $filters]);
     }
 }

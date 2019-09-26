@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('import:teams')->daily();
         $schedule->command('import:understats')->daily();
         $schedule->command('import:performances')->daily();
+        $schedule->command('import:fixtures')->daily();
     }
 
     /**
