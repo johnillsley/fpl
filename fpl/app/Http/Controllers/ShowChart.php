@@ -82,7 +82,7 @@ class ShowChart extends Controller
                     $item[] = $player->second_name;
                     $item[] = (float)$player->transfer->now_cost;
                     $item[] = (float)$player->points_per_game;
-                    $item[] = $player->team_short_name;
+                    $item[] = $player->club->name;
                     $item[] = (float)$player->transfer->selected_by_percent;
                     $data[] = $item;
                 }

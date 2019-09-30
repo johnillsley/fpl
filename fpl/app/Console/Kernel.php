@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('import:understats')->daily();
         $schedule->command('import:performances')->daily();
         $schedule->command('import:fixtures')->daily();
+        $schedule->command('db:backup')->daily()->at('00:30');
     }
 
     /**

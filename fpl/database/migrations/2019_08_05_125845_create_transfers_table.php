@@ -28,6 +28,8 @@ class CreateTransfersTable extends Migration
             $table->timestamps();
 
             $table->index('player_id');
+            $table->index('created_at');
+            $table->index('updated_at');
             $table->foreign('player_id')->references('id')->on('players');
         });
     }

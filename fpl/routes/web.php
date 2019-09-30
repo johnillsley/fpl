@@ -11,10 +11,14 @@
 |
 */
 
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+/*
 Route::get('/', function () {
     return view('auth.login');
 });
-
+*/
 Route::resource('player', 'PlayerController', ['only' => [
         'index', 'show'
 ]]);
@@ -39,6 +43,3 @@ Route::post('chart/{type}', 'ShowChart');
 Route::get('watchlist', 'ShowWatchlist');
 
 Route::post('watchlist/{player}', 'AjaxController@watchlist');
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
