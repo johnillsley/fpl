@@ -1,0 +1,11 @@
+.ranking {
+    color: #777777;
+    font-size: small;
+}
+.club_badge {
+    float: left;
+    margin: 5px 10px 20px 0;
+}
+.player_image {
+    float: right;
+}
