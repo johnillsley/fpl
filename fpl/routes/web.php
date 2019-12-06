@@ -14,32 +14,37 @@
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-/*
+
 Route::get('/', function () {
     return view('auth.login');
 });
-*/
-Route::resource('player', 'PlayerController', ['only' => [
-        'index', 'show'
-]]);
 
-Route::get('getdata/{type?}', 'GetExternalData');
+Route::middleware(['auth'])->group(function () {
+    Route::resource('player', 'PlayerController', ['only' => [
+            'index', 'show'
+    ]]);
 
-Route::get('fixtures/{week?}', 'ShowFixtures');
-Route::get('fixture/{fixture}', 'ShowMatch');
+    Route::get('getdata/{type?}', 'GetExternalData');
 
-Route::get('matches/{team}', 'ShowMatches');
+    Route::get('fixtures/{week?}', 'ShowFixtures');
+    Route::get('fixture/{fixture}', 'ShowMatch');
 
-Route::get('table', 'ShowTable');
+    Route::get('matches/{team}', 'ShowMatches');
 
-Route::get('team/{team}', 'ShowTeam');
-Route::get('position/{position}', 'ShowPosition');
+    Route::get('table', 'ShowTable');
 
-Route::get('transfers/{player}', 'ShowTransfers');
+    Route::get('team/{team}', 'ShowTeam');
+    Route::get('position/{position}', 'ShowPosition');
 
-Route::get('chart/{type}', 'ShowChart');
-Route::post('chart/{type}', 'ShowChart');
+    Route::get('transfers/{player}', 'ShowTransfers');
 
-Route::get('watchlist', 'ShowWatchlist');
+    Route::get('chart/{type}', 'ShowChart');
+    Route::post('chart/{type}', 'ShowChart');
 
-Route::post('watchlist/{player}', 'AjaxController@watchlist');
+    Route::get('watchlist', 'ShowWatchlist');
+
+    Route::post('watchlist/{player}', 'AjaxController@watchlist');
+});
+
+
+

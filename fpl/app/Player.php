@@ -50,14 +50,19 @@ class Player extends Model
         return $this->hasOne('App\Transfer')->latest();
     }
 
+    public function transfers()
+    {
+        return $this->hasMany('App\Transfer');
+    }
+    
     public function watchlist()
     {
-        return $this->hasOne('App\Watchlist');
+        return $this->belongsTo('App\Watchlist');
     }
 
     public function club()
     {
-        return $this->hasOne('App\Team', 'id', 'team');
+        return $this->belongsTo('App\Team', 'team');
     }
 
     public function understats()

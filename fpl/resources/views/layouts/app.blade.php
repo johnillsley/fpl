@@ -38,23 +38,36 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="/chart/ownership">Ownership</a>
-                    <a class="dropdown-item" href="#">Value for money</a>
+                    <a class="dropdown-item" href="/chart/value">Value for money</a>
                     <a class="dropdown-item" href="/chart/transferactivity">Transfer activity</a>
+                    <a class="dropdown-item" href="/chart/form">Form</a>
                 </div>
             </li>
             <li class="nav-item">
                 <a class="nav-link disabled" href="#">Disabled</a>
             </li>
-        
+        </ul>
         @auth
-            logged in as 
+        <ul class="navbar-nav">
+            <li class="navbar-text">
+                Logged in as {{ Auth::user()->name }}
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                </form>
+            </li>
+        </ul>
         @else
+        <ul class="navbar-nav">
             <li class="nav-item">
                 <a href="{{route('login')}}" class="nav-link">Login</a>
             </li>
             <li class="nav-item">
                 <a href="{{route('register')}}" class="nav-link">Register</a>
             </li>
+        </ul>
         @endauth
         <!--
         <form class="form-inline my-2 my-lg-0">
@@ -62,7 +75,6 @@
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
         -->
-        </ul>
     </div>
 </nav>
 <div class="container">

@@ -23,7 +23,7 @@ class Transfer extends Model
 
     public function player()
     {
-        return $this->hasOne('App\Player', 'id', 'player_id');
+        return $this->belongsTo('App\Player');
     }
     
     public function getNowCostAttribute($value)

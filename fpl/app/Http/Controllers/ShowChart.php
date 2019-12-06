@@ -39,7 +39,9 @@ class ShowChart extends Controller
                     }
                     $filter->selected = ($request->input('minutes')) ? $request->input('minutes') : 90;
                     $filters[] = $filter;
-                    $players = Player::where('minutes', '>=', $filter->selected);
+                    $players = Player::where('minutes', '>=', $filter->selected)->with('club')->orderBy('team');
+                    // where('minutes', '>=', $filter->selected)
+                    
                 }
                 
                 // Filter 2 - team.
@@ -55,14 +57,8 @@ class ShowChart extends Controller
                 if (is_array($request->input('teams'))) {
                     $filter->selected = $request->input('teams');
                     $players = $players->whereIn('team', $filter->selected);
-                    foreach ($filter->selected as $team) {
-                        $team_colours = "";                        
-                    }
                 } else {
                     $filter->selected = null;
-                    foreach ($teams as $team) {
-                        $team_colours = "";
-                    }
                 }
                 $filters[] = $filter;
                 // End of filters.
@@ -74,9 +70,10 @@ class ShowChart extends Controller
                 $options['chartArea'] = 'left:10,top:20,width:"100%",height:"100%"';
                 $options['hAxis']['title'] = 'Price';
                 $options['vAxis']['title'] = 'Points per game';
-                //$options['colors'] = array('#657CD0','#DA68A0','#06C3C0','#777B80','#7C6D70','#7C0850','#F75870');
+                // $options['colors'] = $this->get_team_colours();
                 $options['bubble']['textStyle']['fontSize'] = "11";
                 $data = array(['ID', 'Price', 'Points per game', 'Team', 'Ownership']);
+                $teams_included = array();
                 foreach ($players as $player) {
                     $item = array();
                     $item[] = $player->second_name;
@@ -85,7 +82,11 @@ class ShowChart extends Controller
                     $item[] = $player->club->name;
                     $item[] = (float)$player->transfer->selected_by_percent;
                     $data[] = $item;
+                    if (!in_array($player->team, $teams_included)) {
+                        $teams_included[] = $player->team;
+                    }
                 }
+                $options['colors'] = $this->get_team_colours($teams_included);
                 break;
 
             case 'form':
@@ -96,8 +97,13 @@ class ShowChart extends Controller
                 $options['hAxis']['title'] = 'ICT index';
                 $options['vAxis']['title'] = 'Points in next game';
                 $options['bubble']['textStyle']['fontSize'] = "11";
-                $performances = Performance::where([['ict_index', '>', 0], ['week', '=', $current_week->id]])->get();
+                $performances = Performance::where([['ict_index', '>', 0], ['week', '=', $current_week->id]])
+                        ->with('player')
+                        ->with('player.club')
+                        ->get();
                 $data = array(['ID', 'ICT index', 'Points in next game', 'Team', 'Ownership']);
+                $teams_included = array();
+                $performances = $performances->sortBy('player.team');
                 foreach ($performances as $performance) {
                     $next_week = Performance::where([['player_id', '=', $performance->player_id], ['week', '=', $performance->week + 1]])->first();
                     $item = array();
@@ -107,7 +113,11 @@ class ShowChart extends Controller
                     $item[] = $performance->player->club->name;
                     $item[] = (float)$performance->player->transfer->selected_by_percent;
                     $data[] = $item;
+                    if (!in_array($performance->player->team, $teams_included)) {
+                        $teams_included[] = $performance->player->team;
+                    }
                 }
+                $options['colors'] = $this->get_team_colours($teams_included);
                 break;
 
             case 'transferactivity':
@@ -119,11 +129,15 @@ class ShowChart extends Controller
                 $options['vAxis']['title'] = 'Net transfers in during last hour';
                 $options['bubble']['textStyle']['fontSize'] = "11";
 
-                $recent1 = Transfer::where('updated_at', '>', date('Y-m-d H:i:s', strtotime('-1 hour')))->get();
+                $recent1 = Transfer::where('updated_at', '>', date('Y-m-d H:i:s', strtotime('-1 hour')))
+                        ->with('player')
+                        ->get();
                 $recent2 = Transfer::where('updated_at', '>', date('Y-m-d H:i:s', strtotime('-2 hour')))
                         ->where('updated_at', '<', date('Y-m-d H:i:s', strtotime('-1 hour')))->get();
                 
                 $data = array(['ID', 'Form', 'Net transfers in last hour', 'Team', 'Cost']);
+                $teams_included = array();
+                $recent1 = $recent1->sortBy('player.team');
                 foreach ($recent1 as $transfer) {
 
                     if (!$previous = $recent2->where('player_id', $transfer->player_id)->first()) {
@@ -142,11 +156,57 @@ class ShowChart extends Controller
                     $item[] = $transfer->player->club->name;
                     $item[] = (float)$transfer->player->transfer->now_cost;
                     $data[] = $item;
+                    if (!in_array($transfer->player->team, $teams_included)) {
+                        $teams_included[] = $transfer->player->team;
+                    }
                 }
+                $options['colors'] = $this->get_team_colours($teams_included);
+                break;
+
+            case 'value':
+                $chart->type = "BubbleChart";
+
+                $options = array();
+                $options['title'] = 'Best value for money players';
+                $options['hAxis']['title'] = 'Cost';
+                $options['vAxis']['title'] = 'Form';
+                $options['bubble']['textStyle']['fontSize'] = "11";
+
+                $players = Player::where('form', '>', 0)
+                        ->with('club')
+                        ->orderBy('team')
+                        ->get();
+
+                $data = array(['ID', 'Cost', 'Form', 'Team', 'Ownership']);
+                $teams_included = array();
+                foreach ($players as $player) {
+                    $item = array();
+                    $item[] = $player->second_name;
+                    $item[] = (float)$player->transfer->now_cost;
+                    $item[] = (float)$player->form;
+                    $item[] = $player->club->name;
+                    $item[] = (float)$player->transfer->selected_by_percent;
+                    $data[] = $item;
+                    if (!in_array($player->team, $teams_included)) {
+                        $teams_included[] = $player->team;
+                    }
+                }
+                $options['colors'] = $this->get_team_colours($teams_included);
+                break;
         }
         $chart->options = json_encode((object)$options);
         $chart->data = json_encode($data);
         
         return view('chart', ['chart' => $chart, 'filters' => $filters]);
+    }
+    
+    private function get_team_colours($teams_included) {
+        
+        $colours = array();
+        $teams = Team::whereIn('id', $teams_included)->orderBy('name')->get();
+        foreach ($teams as $team) {
+            $colours[] = $team->colours->colour1;
+        }
+        return $colours;
     }
 }

@@ -54,4 +54,9 @@ class Team extends Model
     {
         return $this->hasMany('App\Player', 'team');
     }
+
+    public function colours()
+    {
+        return $this->belongsTo('App\TeamColour', 'code', 'code');
+    }
 }
