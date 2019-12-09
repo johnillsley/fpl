@@ -105,7 +105,9 @@ class ExternalData
     {
         $fixtures = self::get('fixtures');
         foreach ($fixtures as $fixture) {
-            Fixture::updateOrCreate(['id' => $fixture->id], (array)$fixture);
+            if (is_int($fixture->event)) {
+                Fixture::updateOrCreate(['id' => $fixture->id], (array)$fixture);
+            }
         }
     }
 
