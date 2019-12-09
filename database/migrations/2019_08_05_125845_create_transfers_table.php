@@ -21,7 +21,7 @@ class CreateTransfersTable extends Migration
             $table->smallInteger('now_cost');
             $table->decimal('selected_by_percent', 4, 1);
             $table->char('status');
-            $table->mediumnteger('transfers_in');
+            $table->mediumInteger('transfers_in');
             $table->mediumInteger('transfers_in_event');
             $table->mediumInteger('transfers_out');
             $table->mediumInteger('transfers_out_event');
