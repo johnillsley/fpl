@@ -33,9 +33,9 @@ class CreateTeamsTable extends Migration
             $table->integer('strength_defence_away');
             $table->timestamps();
 
-            $table->foreign('id')->references('team_a')->on('fixtures');
-            $table->foreign('id')->references('team_h')->on('fixtures');
-            $table->foreign('id')->references('team')->on('players');
+            // $table->foreign('id')->references('team_a')->on('fixtures');
+            // $table->foreign('id')->references('team_h')->on('fixtures');
+            // $table->foreign('id')->references('team')->on('players');
         });
     }
 
